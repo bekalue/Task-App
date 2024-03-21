@@ -22,12 +22,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'index']);
     Route::put('/user', [UserController::class, 'update']);
     Route::delete('/user', [UserController::class, 'destroy']);
+    Route::apiResource('/tasks', TaskController::class);
+    Route::apiResource('/tags', TagController::class);
 });
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('/tasks', TaskController::class);
-    Route::apiResource('/tags', TagController::class);
-});
