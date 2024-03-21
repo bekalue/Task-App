@@ -14,7 +14,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return Auth::user()->tags;
+        return Auth::user()->tags()->get();
     }
 
     /**
@@ -24,7 +24,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|unique:tags,name,NULL,id,user_id,' . Auth::id(),
         ]);
 
         $tag = new Tag;
@@ -51,7 +51,7 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag)
     {
         $validatedData = $request->validate([
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|unique:tags,name,' . $tag->id . ',id,user_id,' . Auth::id(),
         ]);
 
         $tag->update($validatedData);
@@ -65,8 +65,12 @@ class TagController extends Controller
      */
     public function destroy(Tag $tag)
     {
+        // Detach all tasks associated with this tag
+        $tag->tasks()->detach();
+
         $tag->delete();
 
         return response()->json(null, 204);
     }
 }
+
