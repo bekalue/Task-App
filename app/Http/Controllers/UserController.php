@@ -42,7 +42,7 @@ class UserController extends Controller
     public function destroy()
     {
         $user = Auth::user();
-        $user->delete();
+        $user->forceDelete();
 
         return response()->json(null, 204);
     }
