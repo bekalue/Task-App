@@ -32,6 +32,9 @@ class TaskController extends Controller
 
         $task = Task::create($validatedData);
 
+        // Attach tags to the task
+        $task->tags()->attach($request->input('tag_ids'));
+
         return response()->json($task, 201);
     }
 
@@ -57,6 +60,9 @@ class TaskController extends Controller
 
         $task->update($validatedData);
 
+        // Sync tags for the task
+        $task->tags()->sync($request->input('tag_ids'));
+
         return response()->json($task, 200);
     }
 
@@ -66,6 +72,9 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        // Detach all tags from the task
+        $task->tags()->detach();
+        
         $task->delete();
 
         return response()->json(null, 204);
