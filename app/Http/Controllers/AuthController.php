@@ -18,12 +18,12 @@ class AuthController extends Controller
         ]);
 
         $validatedData['password'] = Hash::make($request->password);
-
+    
         $user = User::create($validatedData);
-
+    
         $accessToken = $user->createToken('authToken')->plainTextToken;
-
-        return response([ 'user' => $user, 'access_token' => $accessToken]);
+    
+        return response()->json(['user' => $user, 'access_token' => $accessToken]);
     }
 
     public function login(Request $request)
@@ -32,15 +32,16 @@ class AuthController extends Controller
             'email' => 'email|required',
             'password' => 'required'
         ]);
-
+    
         $user = User::where('email', $loginData['email'])->first();
-
+    
         if (!$user || !Hash::check($loginData['password'], $user->password)) {
-            return response(['message' => 'Invalid Credentials']);
+            return response()->json(['message' => 'Invalid Credentials'], 401);
         }
-
+    
         $accessToken = $user->createToken('authToken')->plainTextToken;
-
-        return response(['user' => $user, 'access_token' => $accessToken]);
+    
+        return response()->json(['user' => $user, 'access_token' => $accessToken]);
     }
+
 }
